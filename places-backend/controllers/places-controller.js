@@ -81,9 +81,14 @@ exports.createPlace = async (req, res, next) => {
     user = await User.findById(creator);
   } catch (error) {
     console.log(error.message);
-    const err = new HttpError('Could not find user for provided id', 404);
+    const err = new HttpError('Creating place failed', 500);
     return next(err);
   }
+
+  if (!user) {
+    return next(new HttpError('User could not be found', 404));
+  }
+
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
@@ -92,6 +97,7 @@ exports.createPlace = async (req, res, next) => {
     await user.save({ session: sess });
     await sess.commitTransaction();
   } catch (error) {
+    console.log('Error here ', error.message);
     const err = new HttpError('Creating place failed', 500);
     return next(err);
   }
