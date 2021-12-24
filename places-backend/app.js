@@ -27,4 +27,11 @@ app.use((error, req, res, next) => {
   });
 });
 
-app.listen(5000);
+mongoose
+  .connect('mongodb+srv://admin:1234@cluster0.sh85l.mongodb.net/places')
+  .then(() => {
+    app.listen(5000);
+  })
+  .catch(err => {
+    console.log(err);
+  });
