@@ -5,6 +5,7 @@ const { validationResult } = require('express-validator');
 const getCoordsForAddress = require('../util/location');
 const Place = require('../models/place');
 const User = require('../models/user');
+const { json } = require('body-parser');
 
 exports.getPlaceById = async (req, res, next) => {
   const placeId = req.params.pid;
@@ -42,11 +43,12 @@ exports.getPlacesByUserId = async (req, res, next) => {
     );
     return next(err);
   }
-  if (!places || places.length === 0) {
+  if (!places) {
     const error = new HttpError(
       'Could not find place for the provided user ID',
       404
     );
+
     return next(error);
   }
   places = places.map(place => ({ ...place._doc, id: place._id.toString() }));

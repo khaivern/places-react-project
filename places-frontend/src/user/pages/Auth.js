@@ -15,6 +15,7 @@ import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/Spinner/LoadingSpinner';
 import { useHttpClient } from '../../shared/hooks/http-hook';
 import './Auth.css';
+import ImageUpload from '../../places/components/ImageUpload';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -36,6 +37,7 @@ const Auth = () => {
 
   const authSubmitHandler = async event => {
     event.preventDefault();
+    console.log(formState.inputs);
     if (isLogin) {
       try {
         const data = await sendRequest(
@@ -77,6 +79,7 @@ const Auth = () => {
         {
           ...formState.inputs,
           name: undefined,
+          image: undefined,
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -85,6 +88,10 @@ const Auth = () => {
         {
           ...formState.inputs,
           name: {
+            value: '',
+            isValid: false,
+          },
+          image: {
             value: '',
             isValid: false,
           },
@@ -113,6 +120,14 @@ const Auth = () => {
               label='Name'
               errorText='Please enter a name'
               validators={[VALIDATOR_REQUIRE()]}
+              onInput={inputHandler}
+            />
+          )}
+          {!isLogin && (
+            <ImageUpload
+              id='image'
+              center
+              errorText='Image selected cannot be parsed'
               onInput={inputHandler}
             />
           )}

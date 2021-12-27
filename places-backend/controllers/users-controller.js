@@ -4,15 +4,6 @@ const { v4: uuid } = require('uuid');
 const HttpError = require('../models/http-error');
 const User = require('../models/user');
 
-let USERS = [
-  {
-    id: 'u1',
-    email: 'admin@gmail.com',
-    name: 'USER 1',
-    password: '1234',
-  },
-];
-
 exports.getUsers = async (req, res, next) => {
   let users;
   try {

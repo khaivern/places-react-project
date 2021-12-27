@@ -8,6 +8,7 @@ import './NavLinks.css';
 
 const NavLinks = props => {
   const isAuthenticated = useSelector(state => state.isAuthenticated);
+  const userId = useSelector(state => state.userId);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const logoutHandler = () => {
@@ -21,7 +22,7 @@ const NavLinks = props => {
       </li>
       {isAuthenticated && (
         <li>
-          <NavLink to='/u1/places'>MY PLACES</NavLink>
+          <NavLink to={`/${userId}/places`}>MY PLACES</NavLink>
         </li>
       )}
       {isAuthenticated && (
