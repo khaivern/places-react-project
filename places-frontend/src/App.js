@@ -8,9 +8,9 @@ import UserPlaces from './places/pages/UserPlaces';
 import NewPlace from './places/pages/NewPlace';
 import UpdatePlace from './places/pages/UpdatePlace';
 import Auth from './user/pages/Auth';
-
 function App() {
   const isAuthenticated = useSelector(state => state.isAuthenticated);
+
   let routes;
   if (isAuthenticated) {
     routes = (

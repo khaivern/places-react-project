@@ -1,11 +1,12 @@
+const fs = require('fs');
 const HttpError = require('../models/http-error');
+
 const mongoose = require('mongoose');
 const { validationResult } = require('express-validator');
 
 const getCoordsForAddress = require('../util/location');
 const Place = require('../models/place');
 const User = require('../models/user');
-const { json } = require('body-parser');
 
 exports.getPlaceById = async (req, res, next) => {
   const placeId = req.params.pid;
@@ -69,8 +70,7 @@ exports.createPlace = async (req, res, next) => {
     return next(err);
   }
   const createdPlace = new Place({
-    imageUrl:
-      'https://i.picsum.photos/id/255/600/600.jpg?hmac=-lfdnAl71_eAIy1OPAupFFPh7EOJPmQRJFg-y7lRB3s',
+    imageUrl: req.file.path,
     title,
     description,
     location: coordinates,
@@ -82,7 +82,6 @@ exports.createPlace = async (req, res, next) => {
   try {
     user = await User.findById(creator);
   } catch (error) {
-    console.log(error.message);
     const err = new HttpError('Creating place failed', 500);
     return next(err);
   }
@@ -121,6 +120,9 @@ exports.updatePlace = async (req, res, next) => {
   let updatedPlace;
   try {
     updatedPlace = await Place.findById(pid);
+    if (updatedPlace.creator.toString() !== req.userData.userId) {
+      throw new Error();
+    }
     updatedPlace.title = title;
     updatedPlace.description = description;
     await updatedPlace.save();
@@ -153,6 +155,11 @@ exports.deletePlace = async (req, res, next) => {
     return next(err);
   }
 
+  if (place.creator._id.toString() !== req.userData.userId) {
+    return next(new HttpError('Not Authorized to Delete', 401));
+  }
+
+  const imagePath = place.imageUrl;
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
@@ -165,6 +172,7 @@ exports.deletePlace = async (req, res, next) => {
     return next(err);
   }
 
+  fs.unlink(imagePath, err => console.log(err));
   res.status(200).json({
     message: 'Deleted place',
   });

@@ -17,6 +17,7 @@ import './PlaceForm.css';
 const UpdatePlace = () => {
   const placeId = useParams().placeId;
   const userId = useSelector(state => state.userId);
+  const token = useSelector(state => state.token);
   const navigate = useNavigate();
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [loadedPlace, setLoadedPlace] = useState();
@@ -76,6 +77,7 @@ const UpdatePlace = () => {
         }),
         {
           'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
         }
       );
       navigate(`/${userId}/places`, { replace: true });

@@ -7,13 +7,15 @@ const ImageUpload = props => {
   const [file, setFile] = useState();
   const [previewUrl, setPreviewUrl] = useState();
   const [isValid, setIsValid] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
   const imageRef = useRef();
   const pickImageHandler = () => {
     imageRef.current.click();
   };
   const pickedHandler = event => {
     let pickedFile;
-    let fileIsValid;
+    let fileIsValid = isValid;
+    setIsTouched(true);
     if (event.target.files && event.target.files.length === 1) {
       pickedFile = event.target.files[0];
       setFile(pickedFile);
@@ -56,7 +58,7 @@ const ImageUpload = props => {
           Pick Image
         </Button>
       </div>
-      {!isValid && <p>{props.errorText}</p>}
+      {!isValid && isTouched && <p>{props.errorText}</p>}
     </div>
   );
 };

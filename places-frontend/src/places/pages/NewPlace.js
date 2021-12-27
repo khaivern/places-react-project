@@ -13,11 +13,13 @@ import LoadingSpinner from '../../shared/components/UIElements/Spinner/LoadingSp
 import './PlaceForm.css';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import ImageUpload from '../components/ImageUpload';
 
 const NewPlace = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const navigate = useNavigate();
   const userId = useSelector(state => state.userId);
+  const token = useSelector(state => state.token);
   const { formState, inputHandler } = useForm(
     {
       title: {
@@ -26,6 +28,10 @@ const NewPlace = () => {
       },
       description: {
         value: '',
+        isValid: false,
+      },
+      image: {
+        value: null,
         isValid: false,
       },
       address: {
@@ -39,19 +45,16 @@ const NewPlace = () => {
   const placeSubmitHandler = async event => {
     event.preventDefault();
     try {
-      await sendRequest(
-        'http://localhost:5000/api/places/',
-        'POST',
-        JSON.stringify({
-          title: formState.inputs.title.value,
-          description: formState.inputs.description.value,
-          address: formState.inputs.address.value,
-          creator: userId,
-        }),
-        {
-          'Content-Type': 'application/json',
-        }
-      );
+      const formData = new FormData();
+      formData.append('title', formState.inputs.title.value);
+      formData.append('description', formState.inputs.description.value);
+      formData.append('address', formState.inputs.address.value);
+      formData.append('image', formState.inputs.image.value);
+      formData.append('creator', userId);
+
+      await sendRequest('http://localhost:5000/api/places/', 'POST', formData, {
+        Authorization: 'Bearer ' + token,
+      });
       // Redirect to home page
       navigate('/', { replace: true });
     } catch (err) {}
@@ -77,6 +80,12 @@ const NewPlace = () => {
           validators={[VALIDATOR_MINLENGTH(5)]}
           errorText='Please enter a description of at least 5 characters'
           onInput={inputHandler}
+        />
+        <ImageUpload
+          id='image'
+          onInput={inputHandler}
+          errorText='Please enter a valid image'
+          center
         />
         <Input
           element='input'

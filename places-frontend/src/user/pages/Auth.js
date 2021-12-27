@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useForm } from '../../shared/hooks/form-hook';
 import Input from '../../shared/components/FormElements/Input';
@@ -19,6 +19,7 @@ import ImageUpload from '../../places/components/ImageUpload';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const expiration = useSelector(state => state.expiration);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const dispatch = useDispatch();
   const { formState, inputHandler, setFormData } = useForm(
@@ -37,7 +38,6 @@ const Auth = () => {
 
   const authSubmitHandler = async event => {
     event.preventDefault();
-    console.log(formState.inputs);
     if (isLogin) {
       try {
         const data = await sendRequest(
@@ -51,24 +51,35 @@ const Auth = () => {
             'Content-Type': 'application/json',
           }
         );
-        dispatch(authActions.login(data.user.id));
+        dispatch(
+          authActions.login({
+            userId: data.userId,
+            token: data.token,
+            expirationDate: expiration,
+          })
+        );
       } catch (error) {}
     } else {
       try {
+        const formData = new FormData();
+        formData.append('name', formState.inputs.name.value);
+        formData.append('email', formState.inputs.email.value);
+        formData.append('password', formState.inputs.password.value);
+        formData.append('image', formState.inputs.image.value);
+
         const data = await sendRequest(
           'http://localhost:5000/api/users/signup',
           'POST',
-          JSON.stringify({
-            name: formState.inputs.name.value,
-            email: formState.inputs.email.value,
-            password: formState.inputs.password.value,
-          }),
-          {
-            'Content-Type': 'application/json',
-          }
+          formData
         );
 
-        dispatch(authActions.login(data.user.id));
+        dispatch(
+          authActions.login({
+            userId: data.userId,
+            token: data.token,
+            expirationDate: expiration,
+          })
+        );
       } catch (err) {}
     }
   };
@@ -92,7 +103,7 @@ const Auth = () => {
             isValid: false,
           },
           image: {
-            value: '',
+            value: null,
             isValid: false,
           },
         },
