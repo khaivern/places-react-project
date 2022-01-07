@@ -12,13 +12,15 @@ interface InputProps {
   validators: { type: string; val?: number }[];
   errorText: string;
   onInput: (id: string, value: string, isValid: boolean) => void;
+  initialValue?: string;
+  initialValidity?: boolean;
 }
 
-const initialInput = {
-  value: '',
-  isValid: false,
-  isTouched: false,
-};
+interface InputStateI {
+  value: string;
+  isValid: boolean;
+  isTouched: boolean;
+}
 
 interface InputActionChange {
   type: 'CHANGE';
@@ -32,7 +34,7 @@ interface InputActionBlur {
 
 type InputAction = InputActionChange | InputActionBlur;
 
-const inputReducer = (state = initialInput, action: InputAction) => {
+const inputReducer = (state: InputStateI, action: InputAction) => {
   switch (action.type) {
     case 'CHANGE':
       return {
@@ -56,10 +58,16 @@ const Input: React.FC<InputProps> = ({
   validators,
   errorText,
   onInput,
+  initialValue,
+  initialValidity,
 }) => {
   const [{ value, isValid, isTouched }, dispatchInputAction] = useReducer(
     inputReducer,
-    initialInput
+    {
+      value: initialValue || '',
+      isValid: initialValidity || false,
+      isTouched: false,
+    }
   );
 
   useEffect(() => {
@@ -87,6 +95,7 @@ const Input: React.FC<InputProps> = ({
         id={id}
         onChange={inputChangeHandler}
         onBlur={inputBlurHandler}
+        value={value}
       />
     ) : (
       <textarea
@@ -94,6 +103,7 @@ const Input: React.FC<InputProps> = ({
         rows={rows || 3}
         onChange={inputChangeHandler}
         onBlur={inputBlurHandler}
+        value={value}
       />
     );
 

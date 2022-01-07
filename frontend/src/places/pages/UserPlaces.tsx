@@ -5,6 +5,7 @@ import PlaceList from '../components/PlaceList';
 
 const DUMMY_PLACES = [
   new Place(
+    'p1',
     'https://i.picsum.photos/id/465/200/200.jpg?hmac=66oxx-Qv8Bakk-7zPy6Kdv7t064QKKWhmDwQTWGZ7A0',
     'Lovely Place',
     'One of the most famous sights',
@@ -16,6 +17,7 @@ const DUMMY_PLACES = [
     }
   ),
   new Place(
+    'p2',
     'https://i.picsum.photos/id/64/200/200.jpg?hmac=lJVbDn4h2axxkM72s1w8X1nQxUS3y7li49cyg0tQBZU',
     'Jeff Fat Food Place',
     'Famous Eatery for really fat people',

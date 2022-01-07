@@ -10,6 +10,7 @@ class Place {
     lng: number;
   };
   constructor(
+    id: string,
     image: string,
     title: string,
     description: string,
@@ -20,7 +21,7 @@ class Place {
       lng: number;
     }
   ) {
-    this.id = Math.random().toString();
+    this.id = id;
     this.image = image;
     this.title = title;
     this.description = description;
