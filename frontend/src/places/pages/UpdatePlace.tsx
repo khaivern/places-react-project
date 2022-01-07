@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import useFormHook from '../../hooks/form-hook';
+import useFormHook, { initialInputStructure } from '../../hooks/form-hook';
 import Place from '../../models/place';
 import Button from '../../shared/components/FormElements/Button';
 import Input from '../../shared/components/FormElements/Input';
 import Card from '../../shared/components/UIElements/Card';
 import { VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE } from '../../util/validators';
 
-const DUMMY_PLACES = [
+const DUMMY_PLACES: Place[] = [
   new Place(
     'p1',
     'https://i.picsum.photos/id/465/200/200.jpg?hmac=66oxx-Qv8Bakk-7zPy6Kdv7t064QKKWhmDwQTWGZ7A0',
@@ -36,13 +36,24 @@ const DUMMY_PLACES = [
 
 const UpdatePlace = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const { formState, inputHandler, setFormData } = useFormHook();
+  const [notFound, setNotFound] = useState(false);
+
+  const { formState, inputHandler, setFormData } = useFormHook(
+    {
+      title: initialInputStructure,
+      description: initialInputStructure,
+    },
+    true
+  );
+
   const placeId = useParams().pid;
   useEffect(() => {
     const place = DUMMY_PLACES.find((place) => place.id === placeId);
     setIsLoading(true);
     if (!place) {
-      throw new Error('Found no such place');
+      setNotFound(true);
+      setIsLoading(false);
+      return;
     }
     setFormData({
       inputs: {
@@ -75,6 +86,16 @@ const UpdatePlace = () => {
     );
   }
 
+  if (notFound) {
+    return (
+      <div className='centered'>
+        <Card>
+          <h2>No Such Place Found!</h2>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <form className='place-form' onSubmit={updateFormHandler}>
       <Input
@@ -85,7 +106,7 @@ const UpdatePlace = () => {
         validators={[VALIDATOR_REQUIRE()]}
         errorText='Please enter a valid title'
         onInput={inputHandler}
-        initialValue={formState.inputs.title.val}
+        initialValue={formState.inputs.title!.val}
         initialValidity={true}
       />
       <Input
@@ -95,7 +116,7 @@ const UpdatePlace = () => {
         validators={[VALIDATOR_MINLENGTH(4)]}
         errorText='Please enter a valid description'
         onInput={inputHandler}
-        initialValue={formState.inputs.description.val}
+        initialValue={formState.inputs.description!.val}
         initialValidity={true}
       />
       <Button disabled={!formState.overallIsValid}>UPDATE PLACE</Button>

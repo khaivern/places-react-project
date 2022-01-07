@@ -1,5 +1,6 @@
 import React from 'react';
 import Place from '../../models/place';
+import Button from '../../shared/components/FormElements/Button';
 import Card from '../../shared/components/UIElements/Card';
 import PlaceItem from './PlaceItem';
 
@@ -11,7 +12,7 @@ const PlaceList: React.FC<{ items: Place[] }> = ({ items }) => {
       <div className='place-list centered'>
         <Card>
           <h2>No Places Found. Maybe create one?</h2>
-          <button>Share Place</button>
+          <Button to='/places/new'>Share Place</Button>
         </Card>
       </div>
     );

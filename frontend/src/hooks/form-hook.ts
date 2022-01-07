@@ -1,29 +1,18 @@
 import { useCallback, useReducer } from 'react';
 
+export const initialInputStructure = {
+  val: '',
+  isValid: false,
+};
 interface initialFormI {
   inputs: {
     [id: string]: {
       val: string;
       isValid: boolean;
-    };
+    } | null;
   };
   overallIsValid: boolean;
 }
-
-const initialInputData = {
-  val: '',
-  isValid: false,
-};
-
-const initialForm: initialFormI = {
-  inputs: {
-    title: initialInputData,
-    description: initialInputData,
-    address: initialInputData,
-    image: initialInputData,
-  },
-  overallIsValid: false,
-};
 
 interface onInputAction {
   type: 'CHANGE';
@@ -44,10 +33,13 @@ const formReducer = (state: initialFormI, action: Action) => {
     case 'CHANGE':
       let formIsValid = true;
       for (const inputId in state.inputs) {
+        if (!state.inputs[inputId]) {
+          continue;
+        }
         if (inputId === action.id) {
           formIsValid = formIsValid && action.isValid;
         } else {
-          formIsValid = formIsValid && state.inputs[inputId].isValid;
+          formIsValid = formIsValid && state.inputs[inputId]!.isValid;
         }
       }
       return {
@@ -70,8 +62,14 @@ const formReducer = (state: initialFormI, action: Action) => {
   }
 };
 
-const useFormHook = () => {
-  const [formState, dispatchFormAction] = useReducer(formReducer, initialForm);
+const useFormHook = (
+  initialFormInputs: initialFormI['inputs'],
+  initialFormValidity: boolean
+) => {
+  const [formState, dispatchFormAction] = useReducer(formReducer, {
+    inputs: initialFormInputs,
+    overallIsValid: initialFormValidity,
+  });
 
   const inputHandler = useCallback(
     (id: string, value: string, isValid: boolean) => {

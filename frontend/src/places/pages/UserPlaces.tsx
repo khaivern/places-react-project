@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import Place from '../../models/place';
 import PlaceList from '../components/PlaceList';
 
-const DUMMY_PLACES = [
+const DUMMY_PLACES: Place[] = [
   new Place(
     'p1',
     'https://i.picsum.photos/id/465/200/200.jpg?hmac=66oxx-Qv8Bakk-7zPy6Kdv7t064QKKWhmDwQTWGZ7A0',

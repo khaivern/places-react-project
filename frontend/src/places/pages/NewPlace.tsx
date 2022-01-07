@@ -1,4 +1,4 @@
-import useFormHook from '../../hooks/form-hook';
+import useFormHook, { initialInputStructure } from '../../hooks/form-hook';
 import Button from '../../shared/components/FormElements/Button';
 import Input from '../../shared/components/FormElements/Input';
 
@@ -9,7 +9,15 @@ const NewPlace = () => {
   const {
     formState: { inputs, overallIsValid },
     inputHandler,
-  } = useFormHook();
+  } = useFormHook(
+    {
+      title: initialInputStructure,
+      description: initialInputStructure,
+      image: initialInputStructure,
+      address: initialInputStructure,
+    },
+    false
+  );
 
   const submitNewPlaceHandler: React.FormEventHandler<HTMLFormElement> = (
     e

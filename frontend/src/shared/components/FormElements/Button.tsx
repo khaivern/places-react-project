@@ -3,19 +3,13 @@ import { Link } from 'react-router-dom';
 
 import './Button.css';
 
-enum ButtonTypes {
-  btn = 'button',
-  submit = 'submit',
-  reset = 'reset',
-}
-
 interface ButtonProps {
   href?: string;
   size?: string;
   inverse?: boolean;
   danger?: boolean;
   to?: string;
-  type?: ButtonTypes;
+  type?: 'button' | 'submit' | 'reset';
   onClick?: () => void;
   disabled?: boolean;
 }
