@@ -106,7 +106,7 @@ const UpdatePlace = () => {
         validators={[VALIDATOR_REQUIRE()]}
         errorText='Please enter a valid title'
         onInput={inputHandler}
-        initialValue={formState.inputs.title!.val}
+        initialValue={formState.inputs.title!.val as string}
         initialValidity={true}
       />
       <Input
@@ -116,7 +116,7 @@ const UpdatePlace = () => {
         validators={[VALIDATOR_MINLENGTH(4)]}
         errorText='Please enter a valid description'
         onInput={inputHandler}
-        initialValue={formState.inputs.description!.val}
+        initialValue={formState.inputs.description!.val as string}
         initialValidity={true}
       />
       <Button disabled={!formState.overallIsValid}>UPDATE PLACE</Button>

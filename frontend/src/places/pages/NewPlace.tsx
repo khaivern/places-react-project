@@ -1,11 +1,14 @@
+import { useSelector } from 'react-redux';
 import useFormHook, { initialInputStructure } from '../../hooks/form-hook';
 import Button from '../../shared/components/FormElements/Button';
 import Input from '../../shared/components/FormElements/Input';
 
+import { RootState } from '../../store';
 import { VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE } from '../../util/validators';
 import './NewPlace.css';
 
 const NewPlace = () => {
+  const token = useSelector<RootState>((state) => state.auth.token);
   const {
     formState: { inputs, overallIsValid },
     inputHandler,
@@ -23,7 +26,16 @@ const NewPlace = () => {
     e
   ) => {
     e.preventDefault();
-    console.log(inputs);
+    fetch('http://localhost:8000/feed/post', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      // body: JSON.stringify({
+
+      // })
+    });
   };
 
   return (

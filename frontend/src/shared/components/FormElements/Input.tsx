@@ -14,6 +14,7 @@ interface InputProps {
   onInput: (id: string, value: string, isValid: boolean) => void;
   initialValue?: string;
   initialValidity?: boolean;
+  style?: React.CSSProperties;
 }
 
 interface InputStateI {
@@ -60,6 +61,7 @@ const Input: React.FC<InputProps> = ({
   onInput,
   initialValue,
   initialValidity,
+  style,
 }) => {
   const [{ value, isValid, isTouched }, dispatchInputAction] = useReducer(
     inputReducer,
@@ -96,6 +98,7 @@ const Input: React.FC<InputProps> = ({
         onChange={inputChangeHandler}
         onBlur={inputBlurHandler}
         value={value}
+        style={style}
       />
     ) : (
       <textarea

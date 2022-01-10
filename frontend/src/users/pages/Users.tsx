@@ -1,26 +1,39 @@
 import UsersList from '../components/UsersList';
 
 import User from '../../models/user';
-
-const DUMMY_USERS: User[] = [
-  {
-    id: 'u1',
-    image:
-      'https://i.picsum.photos/id/418/200/200.jpg?hmac=FPLIYEnmfmXtqHPsuZvUzJeXJJbbxMWNq6Evh7mMSN4',
-    name: 'Maximus Prime',
-    placeCount: 3,
-  },
-  {
-    id: 'u2',
-    image:
-      'https://i.picsum.photos/id/313/200/200.jpg?hmac=rh2PdOLFkEclUr6nN2KdavcsSZIHVkYnv9D0BtJjykA',
-    name: 'Bumble Bee',
-    placeCount: 5,
-  },
-];
+import { useEffect, useState } from 'react';
+import Card from '../../shared/components/UIElements/Card';
 
 const Users = () => {
-  return <UsersList items={DUMMY_USERS} />;
+  const [loadedUsers, setLoadedUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setIsLoading(true);
+      const res = await fetch('http://localhost:8000/auth/users');
+      const data = await res.json();
+      if (res.status !== 200) {
+        throw new Error(data.message);
+      }
+      const { users } = data;
+      const updatedUsers = users.map((user: User) => {
+        return { ...user, placeCount: user.places ? user.places.length : 0 };
+      });
+      setLoadedUsers(updatedUsers);
+      setIsLoading(false);
+    };
+    fetchUsers().catch((err) => console.log(err));
+  }, []);
+  if (isLoading) {
+    return (
+      <div className='centered'>
+        <Card>
+          <h2>Loading...</h2>
+        </Card>
+      </div>
+    );
+  }
+  return <UsersList items={loadedUsers} />;
 };
 
 export default Users;

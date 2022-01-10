@@ -7,7 +7,7 @@ export const initialInputStructure = {
 interface initialFormI {
   inputs: {
     [id: string]: {
-      val: string;
+      val: string | null | File;
       isValid: boolean;
     } | null;
   };
@@ -17,7 +17,7 @@ interface initialFormI {
 interface onInputAction {
   type: 'CHANGE';
   id: string;
-  value: string;
+  value: string | File | null;
   isValid: boolean;
 }
 
@@ -72,7 +72,7 @@ const useFormHook = (
   });
 
   const inputHandler = useCallback(
-    (id: string, value: string, isValid: boolean) => {
+    (id: string, value: string | File | null, isValid: boolean) => {
       dispatchFormAction({ type: 'CHANGE', id, value, isValid });
     },
     []

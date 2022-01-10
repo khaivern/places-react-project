@@ -25,7 +25,7 @@ const UsersList: React.FC<UsersListProps> = ({ items }) => {
             key={user.id}
             id={user.id}
             name={user.name}
-            image={user.image}
+            imageURL={user.imageURL}
             placeCount={user.placeCount}
           />
         ))}

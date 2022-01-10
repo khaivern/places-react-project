@@ -17,7 +17,7 @@ const PlaceItem: React.FC<Place> = ({
   title,
   location,
 }) => {
-  const isLoggedIn = useSelector<RootState>((state) => state.auth.isLoggedIn);
+  const token = useSelector<RootState>((state) => state.auth.token);
 
   const [showMap, setShowMap] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
@@ -75,8 +75,8 @@ const PlaceItem: React.FC<Place> = ({
             <Button inverse onClick={openMapHandler}>
               VIEW ON MAP
             </Button>
-            {isLoggedIn && <Button to={`/places/${id}`}>EDIT</Button>}
-            {isLoggedIn && (
+            {token && <Button to={`/places/${id}`}>EDIT</Button>}
+            {token && (
               <Button onClick={showWarningModal} danger>
                 DELETE
               </Button>

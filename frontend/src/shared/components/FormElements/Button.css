@@ -43,6 +43,17 @@
   border-color: #f34343;
 }
 
+.button--success {
+  background: #00833b;
+  border-color: #00833b;
+}
+
+.button--success:hover,
+.button--success:active {
+  background: #52f343;
+  border-color: #52f343;
+}
+
 .button:disabled,
 .button:hover:disabled,
 .button:active:disabled {

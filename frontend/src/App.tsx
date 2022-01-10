@@ -9,10 +9,10 @@ import Users from './users/pages/Users';
 import { RootState } from './store';
 
 const App = () => {
-  const isLoggedIn = useSelector<RootState>((state) => state.auth.isLoggedIn);
+  const token = useSelector<RootState>((state) => state.auth.token);
   let routes: React.ReactElement;
 
-  if (isLoggedIn) {
+  if (token) {
     routes = (
       <Routes>
         <Route path='/' element={<Users />} />

@@ -6,13 +6,13 @@ import Avatar from '../../shared/components/UIElements/Avatar';
 import './UserItem.css';
 import Card from '../../shared/components/UIElements/Card';
 
-const UserItem: React.FC<User> = ({ id, name, image, placeCount }) => {
+const UserItem: React.FC<User> = ({ id, name, imageURL, placeCount }) => {
   return (
     <li className='user-item'>
       <Card className='user-item__content'>
         <Link to={`/${id}/places`}>
           <div className='user-item__image'>
-            <Avatar image={image} alt={name} />
+            <Avatar image={imageURL} alt={name} />
           </div>
           <div className='user-item__info'>
             <h2>{name}</h2>

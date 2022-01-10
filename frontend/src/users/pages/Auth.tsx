@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import useFormHook, { initialInputStructure } from '../../hooks/form-hook';
 import Button from '../../shared/components/FormElements/Button';
+import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 import Input from '../../shared/components/FormElements/Input';
 import Card from '../../shared/components/UIElements/Card';
 import { useAppDispatch } from '../../store';
@@ -29,7 +30,37 @@ const Auth: React.FC = () => {
 
   const authFormHandler: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    dispatch(authActions.login());
+    let url: string;
+    if (isLoginMode) {
+      url = 'http://localhost:8000/auth/login';
+    } else {
+      url = 'http://localhost:8000/auth/signup';
+    }
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: inputs.email!.val,
+        password: inputs.password!.val,
+        name: inputs.name?.val,
+        image: inputs.image?.val,
+      }),
+    }).then(async (res) => {
+      const data = await res.json();
+      if (res.status !== 200) {
+        throw new Error('Signing Up failed : ' + data.message);
+      }
+      console.log(data);
+
+      if (data.token && data.userId) {
+        dispatch(authActions.login({ token: data.token, userId: data.userId }));
+      } else {
+        // send sign up notification
+        setIsLoginMode(true);
+      }
+    });
   };
 
   const switchModeHandler = () => {
@@ -42,6 +73,10 @@ const Auth: React.FC = () => {
             val: '',
             isValid: false,
           },
+          image: {
+            val: null,
+            isValid: false,
+          },
         },
         overallIsValid: false,
       });
@@ -51,6 +86,7 @@ const Auth: React.FC = () => {
         inputs: {
           ...inputs,
           name: null,
+          image: null,
         },
         overallIsValid: inputs.email!.isValid && inputs.password!.isValid,
       });
@@ -58,6 +94,7 @@ const Auth: React.FC = () => {
 
     setIsLoginMode((prevState) => !prevState);
   };
+
   return (
     <Card className='authentication'>
       <header className='authentication__header'>
@@ -75,6 +112,9 @@ const Auth: React.FC = () => {
             errorText='Please enter a valid name'
             validators={[VALIDATOR_REQUIRE()]}
           />
+        )}
+        {!isLoginMode && (
+          <ImageUpload id='image' center onInput={inputHandler} />
         )}
         <Input
           element='input'
