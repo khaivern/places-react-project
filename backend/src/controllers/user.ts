@@ -44,9 +44,9 @@ export const signup: RequestHandler = async (req, res, next) => {
   if (!errors.isEmpty()) {
     return generateError(next, 'Validation Failed', 422, errors.array());
   }
-  // if (!req.file) {
-  //   return generateError(next, 'No image file provided', 422);
-  // }
+  if (!req.file) {
+    return generateError(next, 'No image file provided', 422);
+  }
 
   const { email, password, name } = req.body as {
     email: string;
@@ -59,7 +59,7 @@ export const signup: RequestHandler = async (req, res, next) => {
       email,
       password: hashedPW,
       name,
-      // imageURL: req.file.path.replace('\\', '/'),
+      imageURL: req.file.filename,
       places: [],
     });
     await user.save();

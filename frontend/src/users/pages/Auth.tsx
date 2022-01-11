@@ -10,10 +10,13 @@ import {
   VALIDATOR_EMAIL,
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
-} from '../../util/validators';
+} from '../../shared/util/validators';
 import './Auth.css';
+import useHttpHook from '../../hooks/http-hook';
+import ErrorForm from '../../shared/util/error-form';
 
 const Auth: React.FC = () => {
+  const { httpError, sendRequest, clearError } = useHttpHook();
   const [isLoginMode, setIsLoginMode] = useState(true);
   const dispatch = useAppDispatch();
   const {
@@ -28,7 +31,9 @@ const Auth: React.FC = () => {
     false
   );
 
-  const authFormHandler: React.FormEventHandler<HTMLFormElement> = (e) => {
+  const authFormHandler: React.FormEventHandler<HTMLFormElement> = async (
+    e
+  ) => {
     e.preventDefault();
     let url: string;
     if (isLoginMode) {
@@ -36,31 +41,19 @@ const Auth: React.FC = () => {
     } else {
       url = 'http://localhost:8000/auth/signup';
     }
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: inputs.email!.val,
-        password: inputs.password!.val,
-        name: inputs.name?.val,
-        image: inputs.image?.val,
-      }),
-    }).then(async (res) => {
-      const data = await res.json();
-      if (res.status !== 200) {
-        throw new Error('Signing Up failed : ' + data.message);
-      }
-      console.log(data);
 
-      if (data.token && data.userId) {
-        dispatch(authActions.login({ token: data.token, userId: data.userId }));
-      } else {
-        // send sign up notification
-        setIsLoginMode(true);
-      }
-    });
+    const formData = new FormData();
+    formData.append('email', inputs.email!.val as string);
+    formData.append('password', inputs.password!.val as string);
+    formData.append('image', inputs.image?.val as File);
+    formData.append('name', inputs.name?.val as string);
+    const data = await sendRequest(url, 'POST', formData);
+    if (data && data.token && data.userId) {
+      dispatch(authActions.login({ token: data.token, userId: data.userId }));
+    } else {
+      // send sign up notification
+      setIsLoginMode(true);
+    }
   };
 
   const switchModeHandler = () => {
@@ -95,55 +88,68 @@ const Auth: React.FC = () => {
     setIsLoginMode((prevState) => !prevState);
   };
 
+  // if (isLoading) {
+  //   return (
+  //     <div className='centered'>
+  //       <Card>
+  //         <h2>Loading...</h2>
+  //       </Card>
+  //     </div>
+  //   );
+  // }
+
   return (
-    <Card className='authentication'>
-      <header className='authentication__header'>
-        <h1>{isLoginMode ? 'LOGIN' : 'SIGNUP'}</h1>
-      </header>
-      <hr />
-      <form onSubmit={authFormHandler}>
-        {!isLoginMode && (
+    <>
+      {httpError && <ErrorForm clearError={clearError} errorText={httpError} />}
+      <Card className='authentication'>
+        <header className='authentication__header'>
+          <h1>{isLoginMode ? 'LOGIN' : 'SIGNUP'}</h1>
+        </header>
+        <hr />
+        <form onSubmit={authFormHandler}>
+          {!isLoginMode && (
+            <Input
+              element='input'
+              type='text'
+              id='name'
+              label='Name'
+              onInput={inputHandler}
+              errorText='Please enter a valid name'
+              validators={[VALIDATOR_REQUIRE()]}
+            />
+          )}
+          {!isLoginMode && (
+            <ImageUpload id='image' center onInput={inputHandler} authForm />
+          )}
           <Input
             element='input'
-            type='text'
-            id='name'
-            label='Name'
+            type='email'
+            id='email'
+            label='E-mail'
             onInput={inputHandler}
-            errorText='Please enter a valid name'
-            validators={[VALIDATOR_REQUIRE()]}
+            errorText='Please enter a valid email'
+            validators={[VALIDATOR_EMAIL()]}
           />
-        )}
-        {!isLoginMode && (
-          <ImageUpload id='image' center onInput={inputHandler} />
-        )}
-        <Input
-          element='input'
-          type='email'
-          id='email'
-          label='E-mail'
-          onInput={inputHandler}
-          errorText='Please enter a valid email'
-          validators={[VALIDATOR_EMAIL()]}
-        />
-        <Input
-          element='input'
-          type='password'
-          id='password'
-          label='Password'
-          onInput={inputHandler}
-          errorText='Please enter a valid password of at least 4 characters'
-          validators={[VALIDATOR_MINLENGTH(4)]}
-        />
-        <Button disabled={!overallIsValid}>
-          {isLoginMode ? 'LOGIN' : 'SIGNUP'}
+          <Input
+            element='input'
+            type='password'
+            id='password'
+            label='Password'
+            onInput={inputHandler}
+            errorText='Please enter a valid password of at least 4 characters'
+            validators={[VALIDATOR_MINLENGTH(4)]}
+          />
+          <Button disabled={!overallIsValid}>
+            {isLoginMode ? 'LOGIN' : 'SIGNUP'}
+          </Button>
+        </form>
+        <Button inverse onClick={switchModeHandler}>
+          Switch to {isLoginMode ? 'SIGNUP' : 'LOGIN'}
         </Button>
-      </form>
-      <Button inverse onClick={switchModeHandler}>
-        Switch to {isLoginMode ? 'SIGNUP' : 'LOGIN'}
-      </Button>
 
-      <pre>{JSON.stringify(inputs, null, 2)}</pre>
-    </Card>
+        <pre>{JSON.stringify(inputs, null, 2)}</pre>
+      </Card>
+    </>
   );
 };
 

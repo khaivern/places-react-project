@@ -7,3 +7,8 @@
   overflow: hidden;
   background: white;
 }
+
+.card--error {
+  background: #7402029f;
+  color: white;
+}

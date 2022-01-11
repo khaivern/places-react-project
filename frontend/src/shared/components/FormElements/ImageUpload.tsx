@@ -1,18 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
 import Button from './Button';
-
+import './ImageUpload.css';
 interface ImageUploadProps {
   id: string;
   center?: boolean;
+  authForm?: boolean;
+  placeForm?: boolean;
   onInput: (id: string, value: File | null, isValid: boolean) => void;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ id, onInput, center }) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({
+  id,
+  onInput,
+  center,
+  authForm,
+  placeForm,
+}) => {
   const imageRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [isValid, setIsValid] = useState(false);
   const [preview, setPreview] = useState<string | undefined>();
-
+  const [isTouched, setIsTouched] = useState(false);
   useEffect(() => {
     if (!file) {
       return;
@@ -36,17 +44,21 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ id, onInput, center }) => {
   const filePickedHandler: React.ChangeEventHandler<HTMLInputElement> = (
     event
   ) => {
+    setIsTouched(true);
+    let pickedFile: File | null = file;
     let isValid = true;
     if (event.target.files && event.target.files.length === 1) {
-      const pickedFile = event.target.files[0];
+      pickedFile = event.target.files[0];
       setFile(pickedFile);
       setIsValid(true);
       isValid = true;
     } else {
-      setIsValid(false);
-      isValid = false;
+      if (!pickedFile) {
+        setIsValid(false);
+        isValid = false;
+      }
     }
-    onInput(id, file, isValid);
+    onInput(id, pickedFile, isValid);
   };
 
   const removePictureHandler = () => {};
@@ -61,28 +73,52 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ id, onInput, center }) => {
         onChange={filePickedHandler}
       />
       <div className={`image-upload ${center && 'center'}`}>
-        <div className='image-upload__preview'>
-          <img src={preview} alt='Preview' />
-        </div>
-        <Button
-          type='button'
-          success
-          style={{ marginRight: '2rem' }}
-          onClick={addPictureHandler}
-        >
-          <i
-            style={{ height: '1.5rem', fontSize: '1.5rem' }}
-            className='fas fa-user-astronaut'
-          />
-        </Button>
-        <Button type='button' danger onClick={removePictureHandler}>
-          <i
-            style={{ height: '1.5rem', fontSize: '1.5rem' }}
-            className='fas fa-times'
-          />
-        </Button>
+        {preview && (
+          <div className='image-upload__preview'>
+            <img src={preview} alt='Preview' />
+          </div>
+        )}
+        {authForm && (
+          <div className='image-upload__actions'>
+            <Button
+              className='image-upload__actions--add__profile'
+              type='button'
+              success
+              // style={{ marginRight: '2rem' }}
+              onClick={addPictureHandler}
+            >
+              <i
+                style={{ height: '1.5rem', fontSize: '1.5rem' }}
+                className='fas fa-user-astronaut'
+              />
+            </Button>
+            <Button type='button' danger onClick={removePictureHandler}>
+              <i
+                style={{ height: '1.5rem', fontSize: '1.5rem' }}
+                className='fas fa-times'
+              />
+            </Button>
+          </div>
+        )}
+        {placeForm && (
+          <Button
+            style={{ color: 'white' }}
+            type='button'
+            success
+            inverse
+            onClick={addPictureHandler}
+          >
+            <i
+              style={{ height: '1.5rem', fontSize: '1.5rem' }}
+              className='far fa-image'
+            />
+            <p style={{ margin: 0 }}>{preview ? 'Change' : 'Add'} picture</p>
+          </Button>
+        )}
       </div>
-      {!isValid && <p>Please enter a valid image</p>}
+      {!isValid && isTouched && (
+        <p className='error-text'>Please enter a valid image</p>
+      )}
     </div>
   );
 };

@@ -1,33 +1,28 @@
 class Place {
   id: string;
-  image: string;
+
   title: string;
   description: string;
   address: string;
   creatorId: string;
-  location: {
-    lat: number;
-    lng: number;
-  };
+
   constructor(
     id: string,
-    image: string,
+    public imageURL: string,
     title: string,
     description: string,
     address: string,
     creatorId: string,
-    location: {
+    public coordinates: {
       lat: number;
       lng: number;
     }
   ) {
     this.id = id;
-    this.image = image;
     this.title = title;
     this.description = description;
     this.address = address;
     this.creatorId = creatorId;
-    this.location = location;
   }
 }
 

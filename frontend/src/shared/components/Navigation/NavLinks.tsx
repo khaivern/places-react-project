@@ -6,7 +6,8 @@ import { authActions } from '../../../store/auth';
 import Button from '../FormElements/Button';
 import './NavLinks.css';
 const NavLinks: React.FC = () => {
-  const token = useSelector<RootState>((state) => state.auth.token);
+  const token = useSelector<RootState>((state) => state.auth.token) as string;
+  const userId = useSelector<RootState>((state) => state.auth.userId) as string;
   const dispatch = useAppDispatch();
   const logoutHandler = () => {
     dispatch(authActions.logout());
@@ -19,7 +20,7 @@ const NavLinks: React.FC = () => {
       </li>
       {token && (
         <li>
-          <NavLink to='/u1/places'>MY PLACES</NavLink>
+          <NavLink to={`/${userId}/places`}>MY PLACES</NavLink>
         </li>
       )}
       {token && (

@@ -17,7 +17,7 @@ import placesRoutes from './routes/places';
 declare global {
   namespace Express {
     interface Request {
-      userId: mongoose.Types.ObjectId;
+      userId: string;
     }
   }
 }
@@ -39,8 +39,8 @@ app.use((_, res, next) => {
 });
 
 // parsing middleware
-app.use(fileUpload.single('image'));
 app.use(bodyParser.json());
+app.use(fileUpload.single('image'));
 // app.use(helmet());
 // app.use(compression);
 

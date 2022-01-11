@@ -3,9 +3,11 @@ import HttpError from '../models/http-error';
 
 export const getLocation = async (address: string) => {
   const response = await axios.get(
-    `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(
+    `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
       address
-    )}&key=${process.env.API_KEY}`
+    )}&location_type=ROOFTOP&result_type=street_address&amp&key=${
+      process.env.API_KEY
+    }`
   );
   const data = await response.data;
   if (!data || data.status === 'ZERO_RESULTS') {

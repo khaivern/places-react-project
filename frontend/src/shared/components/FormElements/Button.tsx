@@ -9,6 +9,7 @@ interface ButtonProps {
   inverse?: boolean;
   danger?: boolean;
   success?: boolean;
+  className?: string;
   to?: string;
   type?: 'button' | 'submit' | 'reset';
   onClick?: () => void;
@@ -51,7 +52,7 @@ const Button: React.FC<ButtonProps> = (props) => {
         props.inverse && 'button--inverse'
       } ${props.danger && 'button--danger'}  ${
         props.success && 'button--success'
-      }`}
+      } ${props.className}`}
       style={props.style}
       type={props.type}
       onClick={props.onClick}

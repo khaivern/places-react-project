@@ -6,7 +6,10 @@ import PlaceItem from './PlaceItem';
 
 import './PlaceList.css';
 
-const PlaceList: React.FC<{ items: Place[] }> = ({ items }) => {
+const PlaceList: React.FC<{
+  items: Place[];
+  onDeletePlace: (placeId: string) => void;
+}> = ({ items, onDeletePlace }) => {
   if (items && items.length === 0) {
     return (
       <div className='place-list centered'>
@@ -23,12 +26,13 @@ const PlaceList: React.FC<{ items: Place[] }> = ({ items }) => {
         <PlaceItem
           key={place.id}
           id={place.id}
-          image={place.image}
+          imageURL={place.imageURL}
           title={place.title}
           description={place.description}
           address={place.address}
           creatorId={place.creatorId}
-          location={place.location}
+          coordinates={place.coordinates}
+          onDeletePlace={onDeletePlace.bind(this, place.id)}
         />
       ))}
     </ul>
