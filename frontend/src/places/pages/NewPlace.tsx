@@ -57,10 +57,14 @@ const NewPlace = () => {
     formData.append('description', description.val);
 
     try {
-      await sendRequest('http://localhost:8000/feed/place', 'POST', formData, {
+      const data = await sendRequest('http://localhost:8000/feed/place', 'POST', formData, {
         Authorization: 'Bearer ' + token,
       });
-
+      if(data.error) {
+        console.log(httpError);
+        
+        return;
+      }
       navigate(`/${userId}/places`);
     } catch (err) {}
   };

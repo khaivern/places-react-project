@@ -27,6 +27,7 @@ const useHttpHook = () => {
       } catch (err: any) {
         setHttpError(err.message);
         setIsLoading(false);
+        return {error: err.message}
       }
     },
     []
