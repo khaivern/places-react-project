@@ -49,7 +49,14 @@ const Auth: React.FC = () => {
     formData.append('name', inputs.name?.val as string);
     const data = await sendRequest(url, 'POST', formData);
     if (data && data.token && data.userId) {
-      dispatch(authActions.login({ token: data.token, userId: data.userId }));
+      const expiration = new Date(new Date().getTime() + 10000);
+      dispatch(
+        authActions.login({
+          token: data.token,
+          userId: data.userId,
+          expiration: expiration.toISOString(),
+        })
+      );
     } else {
       // send sign up notification
       setIsLoginMode(true);
@@ -87,16 +94,6 @@ const Auth: React.FC = () => {
 
     setIsLoginMode((prevState) => !prevState);
   };
-
-  // if (isLoading) {
-  //   return (
-  //     <div className='centered'>
-  //       <Card>
-  //         <h2>Loading...</h2>
-  //       </Card>
-  //     </div>
-  //   );
-  // }
 
   return (
     <>
