@@ -143,8 +143,6 @@ const Auth: React.FC = () => {
         <Button inverse onClick={switchModeHandler}>
           Switch to {isLoginMode ? 'SIGNUP' : 'LOGIN'}
         </Button>
-
-        <pre>{JSON.stringify(inputs, null, 2)}</pre>
       </Card>
     </>
   );
