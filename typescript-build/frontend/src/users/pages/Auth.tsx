@@ -58,7 +58,7 @@ const Auth: React.FC = () => {
         })
       );
     } else {
-      // send sign up notification
+      // optional: send sign up notification
       setIsLoginMode(true);
     }
   };
