@@ -10,7 +10,7 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       setIsLoading(true);
-      const res = await fetch('http://localhost:8000/auth/users');
+      const res = await fetch(process.env.REACT_APP_BACKEND_URL + '/auth/users');
       const data = await res.json();
       if (res.status !== 200) {
         throw new Error(data.message);

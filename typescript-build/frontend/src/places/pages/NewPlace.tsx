@@ -57,7 +57,7 @@ const NewPlace = () => {
     formData.append('description', description.val);
 
     try {
-      const data = await sendRequest('http://localhost:8000/feed/place', 'POST', formData, {
+      const data = await sendRequest(process.env.REACT_APP_BACKEND_URL + '/feed/place', 'POST', formData, {
         Authorization: 'Bearer ' + token,
       });
       if(data.error) {

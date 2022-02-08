@@ -35,7 +35,7 @@ const UpdatePlace = () => {
       setNotFound(true);
       try {
         const data = await sendRequest(
-          `http://localhost:8000/feed/place/${placeId}`,
+          `${process.env.REACT_APP_BACKEND_URL}/feed/place/${placeId}`,
           'GET',
           undefined,
           { Authorization: 'Bearer ' + token }
@@ -66,7 +66,7 @@ const UpdatePlace = () => {
     e.preventDefault();
     try {
       await sendRequest(
-        `http://localhost:8000/feed/place/${placeId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/feed/place/${placeId}`,
         'PUT',
         JSON.stringify({
           title: formState.inputs.title!.val,

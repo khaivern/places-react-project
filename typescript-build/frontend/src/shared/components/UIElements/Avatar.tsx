@@ -14,7 +14,7 @@ const Avatar: React.FC<AvatarProps> = ({ className, image, alt, width }) => {
   return (
     <div className={`avatar ${className}`}>
       <img
-        src={`http://localhost:8000/images/${image}`}
+        src={`${process.env.REACT_APP_BACKEND_URL}/images/${image}`}
         alt={alt}
         style={{ width: width, height: width }}
       />

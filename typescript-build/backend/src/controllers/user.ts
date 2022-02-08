@@ -28,7 +28,7 @@ export const login: RequestHandler = async (req, res, next) => {
       email: user.email,
       userId: user.id,
     },
-    'secretprivatekey',
+    process.env.JWT_KEY || 'secret_fallback_key',
     { expiresIn: '1h' }
   );
 

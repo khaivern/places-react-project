@@ -46,7 +46,7 @@ const PlaceItem: React.FC<PlaceItemProps> = ({
     }
     try {
       await sendRequest(
-        `http://localhost:8000/feed/place/${id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/feed/place/${id}`,
         'DELETE',
         undefined,
         {
@@ -102,7 +102,7 @@ const PlaceItem: React.FC<PlaceItemProps> = ({
       <li className='place-item'>
         <Card className='place-item__content'>
           <div className='place-item__image'>
-            <img src={`http://localhost:8000/images/${imageURL}`} alt={title} />
+            <img src={`${process.env.REACT_APP_BACKEND_URL}/images/${imageURL}`} alt={title} />
           </div>
           <div className='place-item__info'>
             <h2>{title}</h2>

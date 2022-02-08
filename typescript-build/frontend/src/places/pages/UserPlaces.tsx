@@ -11,7 +11,7 @@ const UserPlaces = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       setIsLoading(true);
-      const res = await fetch(`http://localhost:8000/feed/places/${userId}`);
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/feed/places/${userId}`);
       const data = await res.json();
       if (res.status !== 200) {
         throw new Error(data.message);

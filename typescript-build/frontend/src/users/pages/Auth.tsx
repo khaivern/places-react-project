@@ -37,9 +37,9 @@ const Auth: React.FC = () => {
     e.preventDefault();
     let url: string;
     if (isLoginMode) {
-      url = 'http://localhost:8000/auth/login';
+      url = process.env.REACT_APP_BACKEND_URL + '/auth/login';
     } else {
-      url = 'http://localhost:8000/auth/signup';
+      url = process.env.REACT_APP_BACKEND_URL + '/auth/signup';
     }
 
     const formData = new FormData();

@@ -8,7 +8,7 @@ const isAuth: RequestHandler = (req, res, next) => {
     return generateError(next, 'Not Authorized', 401);
   }
   const token = authHeader.split(' ')[1];
-  const decodedToken = jwt.verify(token, 'secretprivatekey');
+  const decodedToken = jwt.verify(token, process.env.JWT_KEY || 'secret_fallback_key');
   if (!decodedToken) {
     return generateError(next, 'Token is altered', 500);
   }
