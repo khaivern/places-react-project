@@ -2,37 +2,44 @@ import UsersList from '../components/UsersList';
 
 import User from '../../models/user';
 import { useEffect, useState } from 'react';
-import Card from '../../shared/components/UIElements/Card';
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import useHttpHook from '../../hooks/http-hook';
+import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 
 const Users = () => {
+  const { isLoading, httpError, sendRequest, clearError } = useHttpHook();
   const [loadedUsers, setLoadedUsers] = useState<User[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const fetchUsers = async () => {
-      setIsLoading(true);
-      const res = await fetch(process.env.REACT_APP_BACKEND_URL + '/auth/users');
-      const data = await res.json();
-      if (res.status !== 200) {
-        throw new Error(data.message);
+      const resData = await sendRequest(
+        process.env.REACT_APP_BACKEND_URL + '/auth/users'
+      );
+
+      if (resData.error) {
+        throw new Error(resData.error);
       }
-      const { users } = data;
+      const { users } = resData;
       const updatedUsers = users.map((user: User) => {
         return { ...user, placeCount: user.places ? user.places.length : 0 };
       });
       setLoadedUsers(updatedUsers);
-      setIsLoading(false);
     };
     fetchUsers().catch((err) => console.log(err));
-  }, []);
+  }, [sendRequest]);
+
   if (isLoading) {
     return (
       <div className='centered'>
-        <Card>
-          <h2>Loading...</h2>
-        </Card>
+        <LoadingSpinner asOverlay />
       </div>
     );
   }
+
+  if (!isLoading && httpError) {
+    return <ErrorModal error={httpError} onClear={clearError} />;
+  }
+
   return <UsersList items={loadedUsers} />;
 };
 

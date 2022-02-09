@@ -1,7 +1,9 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import Place from '../../models/place';
 import Button from '../../shared/components/FormElements/Button';
 import Card from '../../shared/components/UIElements/Card';
+import { RootState } from '../../store';
 import PlaceItem from './PlaceItem';
 
 import './PlaceList.css';
@@ -9,13 +11,16 @@ import './PlaceList.css';
 const PlaceList: React.FC<{
   items: Place[];
   onDeletePlace: (placeId: string) => void;
-}> = ({ items, onDeletePlace }) => {
+  userId: string;
+}> = ({ items, onDeletePlace, userId }) => {
+  const currentUserId = useSelector<RootState>((state) => state.auth.userId);
+  const matchingUser = userId === currentUserId;
   if (items && items.length === 0) {
     return (
       <div className='place-list centered'>
         <Card>
           <h2>No Places Found. Maybe create one?</h2>
-          <Button to='/places/new'>Share Place</Button>
+          {matchingUser && <Button to='/places/new'>Share Place</Button>}
         </Card>
       </div>
     );

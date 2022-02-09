@@ -14,6 +14,7 @@ import {
 import './NewPlace.css';
 import ErrorForm from '../../shared/util/error-form';
 import Card from '../../shared/components/UIElements/Card';
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 
 const NewPlace = () => {
   const token = useSelector<RootState>((state) => state.auth.token);
@@ -57,12 +58,17 @@ const NewPlace = () => {
     formData.append('description', description.val);
 
     try {
-      const data = await sendRequest(process.env.REACT_APP_BACKEND_URL + '/feed/place', 'POST', formData, {
-        Authorization: 'Bearer ' + token,
-      });
-      if(data.error) {
+      const data = await sendRequest(
+        process.env.REACT_APP_BACKEND_URL + '/feed/place',
+        'POST',
+        formData,
+        {
+          Authorization: 'Bearer ' + token,
+        }
+      );
+      if (data.error) {
         console.log(httpError);
-        
+
         return;
       }
       navigate(`/${userId}/places`);
@@ -73,7 +79,7 @@ const NewPlace = () => {
     return (
       <div className='centered'>
         <Card>
-          <h2>Loading...</h2>
+          <LoadingSpinner />
         </Card>
       </div>
     );

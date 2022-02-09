@@ -14,9 +14,10 @@ import {
 import './Auth.css';
 import useHttpHook from '../../hooks/http-hook';
 import ErrorForm from '../../shared/util/error-form';
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 
 const Auth: React.FC = () => {
-  const { httpError, sendRequest, clearError } = useHttpHook();
+  const { isLoading, httpError, sendRequest, clearError } = useHttpHook();
   const [isLoginMode, setIsLoginMode] = useState(true);
   const dispatch = useAppDispatch();
   const {
@@ -49,7 +50,7 @@ const Auth: React.FC = () => {
     formData.append('name', inputs.name?.val as string);
     const data = await sendRequest(url, 'POST', formData);
     if (data && data.token && data.userId) {
-      const expiration = new Date(new Date().getTime() + 10000);
+      const expiration = new Date(new Date().getTime() + 1000 * 60 * 60);
       dispatch(
         authActions.login({
           token: data.token,
@@ -97,6 +98,7 @@ const Auth: React.FC = () => {
 
   return (
     <>
+      {isLoading && <LoadingSpinner asOverlay />}
       {httpError && <ErrorForm clearError={clearError} errorText={httpError} />}
       <Card className='authentication'>
         <header className='authentication__header'>

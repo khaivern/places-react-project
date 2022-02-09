@@ -7,6 +7,7 @@ import useAuthHook from './hooks/auth-hook';
 // import Auth from './users/pages/Auth';
 // import Users from './users/pages/Users';
 import MainNavigation from './shared/components/Navigation/MainNavigation';
+import LoadingSpinner from './shared/components/UIElements/LoadingSpinner';
 
 const Users = React.lazy(() => import('./users/pages/Users'));
 const Auth = React.lazy(() => import('./users/pages/Auth'));
@@ -47,7 +48,7 @@ const App = () => {
         <Suspense
           fallback={
             <div className='centered'>
-              <p>Loading...</p>
+              <LoadingSpinner />
             </div>
           }
         >

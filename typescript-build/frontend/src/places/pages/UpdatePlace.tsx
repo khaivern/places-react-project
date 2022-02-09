@@ -12,6 +12,7 @@ import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
 } from '../../shared/util/validators';
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 
 const UpdatePlace = () => {
   const navigate = useNavigate();
@@ -85,7 +86,7 @@ const UpdatePlace = () => {
     return (
       <div className='centered'>
         <Card>
-          <h2>Loading...</h2>
+          <LoadingSpinner />
         </Card>
       </div>
     );
@@ -126,7 +127,6 @@ const UpdatePlace = () => {
             initialValidity={true}
           />
           <Button disabled={!formState.overallIsValid}>UPDATE PLACE</Button>
-          <pre>{JSON.stringify(formState.inputs, null, 2)}</pre>
         </form>
       )}
     </>

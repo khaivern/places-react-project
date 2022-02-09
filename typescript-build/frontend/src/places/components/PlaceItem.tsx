@@ -10,6 +10,7 @@ import Modal from '../../shared/components/UIElements/Modal';
 import { RootState } from '../../store';
 
 import './PlaceItem.css';
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 
 interface PlaceItemProps extends Place {
   onDeletePlace: () => void;
@@ -62,7 +63,7 @@ const PlaceItem: React.FC<PlaceItemProps> = ({
     return (
       <div className='centered'>
         <Card>
-          <h2>Loading...</h2>
+            <LoadingSpinner />
         </Card>
       </div>
     );
@@ -102,7 +103,10 @@ const PlaceItem: React.FC<PlaceItemProps> = ({
       <li className='place-item'>
         <Card className='place-item__content'>
           <div className='place-item__image'>
-            <img src={`${process.env.REACT_APP_BACKEND_URL}/images/${imageURL}`} alt={title} />
+            <img
+              src={`${process.env.REACT_APP_BACKEND_URL}/images/${imageURL}`}
+              alt={title}
+            />
           </div>
           <div className='place-item__info'>
             <h2>{title}</h2>
