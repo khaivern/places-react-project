@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+const axios = require('axios');
+
 const HttpError = require('../models/http-error');
 const { validationResult } = require('express-validator');
 
@@ -7,6 +9,7 @@ const User = require('../models/users.models');
 const Place = require('../models/places.models');
 const getLocation = require('../util/location');
 const mongoose = require('mongoose');
+const sendToCloudinary = require('../util/file-upload');
 
 const getAllPlaces = async (req, res, next) => {
   let places;
@@ -73,15 +76,6 @@ const createPlace = async (req, res, next) => {
     return next(err);
   }
 
-  const createdPlace = new Place({
-    title,
-    description,
-    imageUrl: req.file.path.replaceAll('\\', '/'),
-    location,
-    address,
-    creator,
-  });
-
   let user;
   try {
     user = await User.findOne({ _id: creator });
@@ -92,6 +86,22 @@ const createPlace = async (req, res, next) => {
   if (!user) {
     return next(new HttpError('No user found', 404));
   }
+
+  let imageUrl;
+  try {
+    imageUrl = await sendToCloudinary(req.file.path.replaceAll('\\', '/'));
+  } catch (err) {
+    return next(new HttpError('Failed to send file to cloud', 500));
+  }
+
+  const createdPlace = new Place({
+    title,
+    description,
+    imageUrl,
+    location,
+    address,
+    creator,
+  });
 
   let result;
   try {
@@ -105,6 +115,7 @@ const createPlace = async (req, res, next) => {
     const error = new HttpError('Creating place failed', 500);
     return next(error);
   }
+
   return res.status(201).json({
     message: 'Created place',
     place: result.toObject({ getters: true }),

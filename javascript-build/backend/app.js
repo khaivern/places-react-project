@@ -8,6 +8,7 @@ const cors = require('cors');
 const HttpError = require('./models/http-error');
 const placesRoutes = require('./routes/places.routes');
 const usersRoutes = require('./routes/users.routes');
+const fileUpload = require('./middleware/file-upload');
 
 const app = express();
 

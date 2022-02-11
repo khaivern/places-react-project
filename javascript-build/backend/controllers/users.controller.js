@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/users.models');
 
 const HttpError = require('../models/http-error');
+const sendToCloudinary = require('../util/file-upload');
 
 const getAllUsers = async (req, res, next) => {
   let users;
@@ -39,12 +40,15 @@ const signUp = async (req, res, next) => {
   }
 
   const hashedPW = await hash(password, 12);
+
   const imagePath = req.file.path.replaceAll('\\', '/');
+  const imageUrl = await sendToCloudinary(imagePath);
+
   const newUser = new User({
     name,
     email,
     password: hashedPW,
-    imageUrl: imagePath,
+    imageUrl,
   });
 
   let result;
