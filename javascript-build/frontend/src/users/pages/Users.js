@@ -19,7 +19,7 @@ const Users = () => {
     <>
       <ErrorModal error={error} onClear={resetError} />
       {isLoading && <LoadingSpinner asOverlay />}
-      {!isLoading && users.length > 0 && <UsersList items={users} />}
+      {!isLoading && <UsersList items={users} />}
     </>
   );
 };

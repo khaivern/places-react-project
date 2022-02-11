@@ -99,9 +99,6 @@ const NewPlace = () => {
         <Button type='submit' disabled={!formState.overallForm}>
           ADD PLACE
         </Button>
-        <pre style={{ textAlign: 'left' }}>
-          {JSON.stringify(formState.inputs, null, 2)}
-        </pre>
       </form>
     </>
   );

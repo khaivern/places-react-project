@@ -1,8 +1,5 @@
-.place-item {
-  margin: 1rem 0;
-}
-
 .card.place-item__content {
+  height: 100%;
   padding: 0;
 }
 
